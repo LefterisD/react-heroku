@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#243665", "#8BD8BD", "#FFBB28"];
+const COLORS = ["#5daae9d7", "#ffbb28be", "#D85531"];
 
 const Charts = ({
   countGram,
@@ -32,9 +32,7 @@ const Charts = ({
     let temp_dataPie = [];
     //dataPie=[];
     let user_id = localStorage.getItem("uniqid");
-    fetch(
-      `https://checkitapi.herokuapp.com/mistakes/get_all/role/${role}/id/${user_id}`
-    )
+    fetch(`http://127.0.0.1:5000/mistakes/get_all/role/${role}/id/${user_id}`)
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -86,7 +84,7 @@ const Charts = ({
     let type = "grammar";
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `https://checkitapi.herokuapp.com/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
+      `http://127.0.0.1:5000/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -115,7 +113,7 @@ const Charts = ({
     let type = "spelling";
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `https://checkitapi.herokuapp.com/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
+      `http://127.0.0.1:5000/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -166,7 +164,7 @@ const Charts = ({
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="count" fill="#243665" />
+          <Bar dataKey="count" fill="#5daae9d7" />
         </BarChart>
       </ResponsiveContainer>
       <h3 className="chart-title">Συνολικά λάθη κάθε κατηγορίας</h3>
@@ -213,7 +211,7 @@ const Charts = ({
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="count" fill="#8BD8BD" />
+          <Bar dataKey="count" fill="#ffbb28be" />
         </BarChart>
       </ResponsiveContainer>
     </div>

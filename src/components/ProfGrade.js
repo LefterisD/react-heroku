@@ -13,7 +13,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#16c79a ", "#e1e5ea"];
+const COLORS = ["#243665", "#e1e5ea"];
 
 const customStyles = {
   overlay: {
@@ -155,7 +155,7 @@ const ProfGrade = ({
   };
 
   const getWeights = (orthPercentage, gramPercentage, stiPercentage) => {
-    fetch(`https://checkitapi.herokuapp.com/weights/by/${role}/${user}`)
+    fetch(`http://127.0.0.1:5000/weights/by/${role}/${user}`)
       .then((res) => res.json())
       .then((data) => {
         let weights = JSON.parse(JSON.stringify(data));
@@ -178,7 +178,7 @@ const ProfGrade = ({
     let stu_name = localStorage.getItem("StudentName");
     let stu_class = localStorage.getItem("StudentClass");
     fetch(
-      `https://checkitapi.herokuapp.com/essays/add/role/${role}/id/${user}/student/${stu_name}/class/${stu_class}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
+      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/student/${stu_name}/class/${stu_class}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
       {
         method: "POST",
       }
@@ -204,7 +204,7 @@ const ProfGrade = ({
     }
 
     fetch(
-      `https://checkitapi.herokuapp.com/weights/update/${role}/${user}/${type}/${grade}/${userGrade}`,
+      `http://127.0.0.1:5000/weights/update/${role}/${user}/${type}/${grade}/${userGrade}`,
       {
         method: "POST",
       }
@@ -293,8 +293,8 @@ const ProfGrade = ({
           </div>
           <div id="color-info">
             <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
-            <span className="color-box">ΣΤΙΞΗΣ</span>
             <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
+            <span className="color-box">ΣΤΙΞΗΣ</span>
           </div>
         </div>
         <div className="content_feedback">

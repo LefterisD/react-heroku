@@ -11,7 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#8BD8BD", "#243665"];
+const COLORS = ["#243665", "#e1e5ea"];
 
 const Grade = ({
   mistakes,
@@ -47,7 +47,7 @@ const Grade = ({
 
   let content;
 
-  const fillData = () => {
+  const fillData = (grade) => {
     if (grade) {
       let temp_data = [
         {
@@ -79,7 +79,7 @@ const Grade = ({
   };
 
   const getWeights = (orthPercentage, gramPercentage, stiPercentage) => {
-    fetch(`https://checkitapi.herokuapp.com/weights/by/${role}/${user}`)
+    fetch(`http://127.0.0.1:5000/weights/by/${role}/${user}`)
       .then((res) => res.json())
       .then((data) => {
         let weights = JSON.parse(JSON.stringify(data));
@@ -91,7 +91,7 @@ const Grade = ({
 
         temp_grade = Math.round(temp_grade * 10) / 10;
 
-        //fillData(temp_grade);
+        fillData(temp_grade);
         setGrade(temp_grade);
         addEssay(countOrth, countGram, countSti, wordCountStu, temp_grade);
       });
@@ -99,7 +99,7 @@ const Grade = ({
   //add essay to  use table
   const addEssay = (countOrth, countGram, countSti, wordCount, grade) => {
     fetch(
-      `https://checkitapi.herokuapp.com/essays/add/role/${role}/id/${user}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
+      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/student/${"όνομα"}/class/${"τμήμα"}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
       {
         method: "POST",
       }
@@ -144,6 +144,7 @@ const Grade = ({
         setOrthStats(0);
         setGramStats(0);
         setStiStats(0);
+        fillData(20);
         setGrade(20);
         addEssay(0, 0, 0, wordCountStu, 20);
       }
@@ -155,7 +156,6 @@ const Grade = ({
       setFlag(true);
     } else {
       findGrade();
-      fillData(grade);
     }
   }, [wordsOrth]);
 
@@ -211,11 +211,7 @@ const Grade = ({
             </p>
           </div>
         </div>
-        <div id="color-info">
-          <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
-          <span className="color-box">ΣΤΙΞΗΣ</span>
-          <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
-        </div>
+
         <div className="content_feedback">
           <p id="title">Σχόλια:</p>
           <div className="comments">
@@ -228,6 +224,11 @@ const Grade = ({
             <div className="comment-wrapper">
               <p className="comment">{feedBackSti}</p>
             </div>
+          </div>
+          <div id="color-info" className="stu-types-info">
+            <span className="color-box">ΟΡΘΟΓΡΑΦΙΚΑ</span>
+            <span className="color-box">ΣΤΙΞΗΣ</span>
+            <span className="color-box">ΓΡΑΜΜΑΤΙΚΑ</span>
           </div>
         </div>
       </div>

@@ -7,6 +7,8 @@ import ChartOne from "./ChartOne";
 import uniqid from "uniqid";
 import FeedBack from "./FeedBack";
 import Grade from "./Grade";
+import { PagesSharp } from "@material-ui/icons";
+import DropDownBtn from "./DropDownBtn";
 
 const StudentPage = ({ user, change, noMistakes }) => {
   const [wordsToHighlightStudent, setWordsToHighlightStudent] = useState([]);
@@ -29,28 +31,39 @@ const StudentPage = ({ user, change, noMistakes }) => {
 
   const [essayNumStu, setEssayNumStu] = useState(0);
 
+  const [loadingStu, setLoadingStu] = useState(false);
   //feedback
+
+  const [noMistakesStu, setNoMistakesStu] = useState("no");
 
   const [grade, setGrade] = useState(0);
 
   const ROLE = "student";
   const getMistakesStudent = (e) => {
     e.preventDefault();
-
-    fetch(` https://checkitapi.herokuapp.com/api/v1/check/${inputTextStudent}`)
+    setLoadingStu(true);
+    fetch(` http://127.0.0.1:5000/api/v1/check/${inputTextStudent}`)
       .then((res) => res.json())
       .then((data) => {
         var json_obj = JSON.parse(JSON.stringify(data));
         setMistakesStudent(json_obj.matches);
+        if (json_obj.matches.length === 0) {
+          setNoMistakesStu("yes");
+        } else {
+          setNoMistakesStu("no");
+        }
+        setLoadingStu(false);
+      })
+      .catch(function () {
+        setLoadingStu(false);
       });
-
     update_essay_count();
   };
 
   const update_essay_count = () => {
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `https://checkitapi.herokuapp.com/update_essay_count/user/${curr_user}/role/${ROLE}`,
+      `http://127.0.0.1:5000/update_essay_count/user/${curr_user}/role/${ROLE}`,
       {
         method: "POST",
       }
@@ -59,20 +72,9 @@ const StudentPage = ({ user, change, noMistakes }) => {
 
   //Sends a POST request to our users api to insert new user into the DB
   const addUser = (id) => {
-    fetch(`https://checkitapi.herokuapp.com/user/${ROLE}/${id}`, {
+    fetch(`http://127.0.0.1:5000/user/${ROLE}/${id}`, {
       method: "POST",
     }).then((results) => console.log(results));
-  };
-  //Delete all mistakes from database
-  const clear_data = () => {
-    let curr_user = localStorage.getItem("uniqid");
-    fetch(
-      `https://checkitapi.herokuapp.com/mistakes/delete_by_id/id/${curr_user}/role/${ROLE}`,
-      {
-        method: "POST",
-      }
-    ).then((results) => console.log(results));
-    window.location.reload();
   };
 
   useEffect(() => {
@@ -89,12 +91,23 @@ const StudentPage = ({ user, change, noMistakes }) => {
     let stored_id = localStorage.getItem("uniqid");
     if (stored_id) {
       setStudentUser(stored_id);
+      if (localStorage.getItem("Role")) {
+        console.log("YPARXEI");
+      } else {
+        localStorage.setItem("Role", "student");
+      }
       addUser(stored_id);
     }
   }, []);
 
   useEffect(() => {
     let stored_userName = localStorage.getItem("userName");
+    if (
+      stored_userName.slice(-1) === "ς" ||
+      stored_userName.slice(-1) === "σ"
+    ) {
+      stored_userName = stored_userName.slice(0, -1);
+    }
     setUserName(stored_userName);
     let info = localStorage.getItem("info");
     if (localStorage.getItem("info")) {
@@ -107,6 +120,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
 
   return (
     <div className="return">
+      <DropDownBtn role={ROLE} />
       <div className="title-wrapper">
         <h1 className="title-prof">Καλώς όρισες {userName}</h1>
       </div>
@@ -120,10 +134,10 @@ const StudentPage = ({ user, change, noMistakes }) => {
         setcountSti={setcountSti}
         setWordsOrth={setWordsOrth}
         setWordsGram={setWordsGram}
-        wordsGram={wordsGram}
         role={ROLE}
         setWordCountProf={setWordCountProf}
         setWordCountStu={setWordCountStu}
+        loading={loadingStu}
       />
       <EssayCounter
         mistakes={mistakesStudent}
@@ -143,7 +157,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
         countSti={countSti}
         setFlag={setFlag}
         wordsOrth={wordsOrth}
-        noMistakes={noMistakes}
+        noMistakes={noMistakesStu}
       />
       <MoreInfo info={userFilledInfo} role={ROLE} />
       <div className="chart_section">
@@ -153,10 +167,6 @@ const StudentPage = ({ user, change, noMistakes }) => {
               Συνολικά στατιστικά <span id="chart-span">{essayNumStu} </span>
               κειμένων
             </h2>
-            <div className="delete-content">
-              <p>Διαγραφή δεδομένων</p>
-              <button onClick={clear_data}>Διαγραφή</button>
-            </div>
           </div>
           <Charts
             countOrth={countOrth}
@@ -172,7 +182,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
         <div className="charts">
           <div className="chart-section-title">
             <h2 className="title-chart" id="sec-title">
-              Στατιστικά τελευταίου κειμένου
+              Στατιστικά τρέχοντος κειμένου
             </h2>
           </div>
           <ChartOne

@@ -30,35 +30,50 @@ function App() {
   const [user, setUser] = useState("");
   const [role, setRole] = useState("");
   const [change, setChange] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState(false);
+
   let nameForm;
+  let cards;
+
   const STUDENT_TEXT =
     "Είσαι μαθητής; Χρησιμοποίησε την εφαρμογή 'Για μαθητές' ώστε να ελέγξεις τις εκθέσεις σου. ";
   const PROFESSOR_TEXT =
-    "Είσαι καθηγητής; Χρησιμοποίησε την εφαρμογή 'Για καθηγητές' ώστε να ελέγξεις τις εκθέσεις των μαθητών σου. ";
+    "Είσαι δάσκαλος; Χρησιμοποίησε την εφαρμογή 'Για δασκάλους' ώστε να ελέγξεις τις εκθέσεις των μαθητών σου. ";
 
   const getMistakes = (e) => {
     e.preventDefault();
+    let stu_name = localStorage.getItem("StudentName");
+    let stu_class = localStorage.getItem("StudentClass");
+    if (stu_name && stu_class) {
+      setLoading(true);
+      fetch(` http://127.0.0.1:5000/api/v1/check/${inputText}`)
+        .then((res) => res.json())
+        .then((data) => {
+          var json_obj = JSON.parse(JSON.stringify(data));
+          setMistakes(json_obj.matches);
+          if (json_obj.matches.length === 0) {
+            setNoMistakes("yes");
+          } else {
+            setNoMistakes("no");
+          }
+          setLoading(false);
+        });
 
-    fetch(` https://checkitapi.herokuapp.com/api/v1/check/${inputText}`)
-      .then((res) => res.json())
-      .then((data) => {
-        var json_obj = JSON.parse(JSON.stringify(data));
-        setMistakes(json_obj.matches);
-        if (json_obj.matches.length === 0) {
-          setNoMistakes("yes");
-        } else {
-          setNoMistakes("no");
-        }
-      });
-
-    update_essay_count();
-    setChange(!change);
+      update_essay_count();
+      setChange(!change);
+    } else {
+      setAlert(true);
+      setTimeout(() => {
+        setAlert(false);
+      }, 8000);
+    }
   };
 
   const update_essay_count = () => {
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `https://checkitapi.herokuapp.com/update_essay_count/user/${curr_user}/role/${role}`,
+      `http://127.0.0.1:5000/update_essay_count/user/${curr_user}/role/${role}`,
       {
         method: "POST",
       }
@@ -88,9 +103,63 @@ function App() {
   }, []);
 
   if (localStorage.getItem("userName")) {
-    nameForm = <div></div>;
+    let user_role = localStorage.getItem("Role");
+    let user_name = localStorage.getItem("userName");
+    if (user_name.slice(-1) === "ς" || user_name.slice(-1) === "σ") {
+      user_name = user_name.slice(0, -1);
+    }
+    if (user_role) {
+      nameForm = (
+        <p id="greeting-message">
+          Γεια σου {user_name}, έχεις επιλέξει την ιδιότητα του{" "}
+          {user_role === "professor" ? "δασκάλου" : "μαθητή"}.
+        </p>
+      );
+    } else {
+      nameForm = <div></div>;
+    }
   } else {
     nameForm = <NameForm />;
+  }
+
+  if (localStorage.getItem("Role")) {
+    if (localStorage.getItem("Role") === "professor") {
+      cards = (
+        <div className="cards">
+          <Link to="/professors" style={{ textDecoration: "none" }}>
+            <Card
+              Svgicon={Professor}
+              Title={"Για Δασκάλους"}
+              text={PROFESSOR_TEXT}
+            />
+          </Link>
+        </div>
+      );
+    } else if (localStorage.getItem("Role") === "student") {
+      cards = (
+        <div className="cards">
+          <Link to="/students" style={{ textDecoration: "none" }}>
+            <Card Svgicon={Student} Title={"Για Μαθητές"} text={STUDENT_TEXT} />
+          </Link>
+        </div>
+      );
+    }
+  } else {
+    cards = (
+      <div className="cards">
+        <Link to="/students" style={{ textDecoration: "none" }}>
+          <Card Svgicon={Student} Title={"Για Μαθητές"} text={STUDENT_TEXT} />
+        </Link>
+
+        <Link to="/professors" style={{ textDecoration: "none" }}>
+          <Card
+            Svgicon={Professor}
+            Title={"Για Καθηγητές"}
+            text={PROFESSOR_TEXT}
+          />
+        </Link>
+      </div>
+    );
   }
   return (
     <div className="App">
@@ -113,22 +182,7 @@ function App() {
                 </TypeWriter>
               </div>
               {nameForm}
-              <div className="cards">
-                <Link to="/students" style={{ textDecoration: "none" }}>
-                  <Card
-                    Svgicon={Student}
-                    Title={"Για Μαθητές"}
-                    text={STUDENT_TEXT}
-                  />
-                </Link>
-                <Link to="/professors" style={{ textDecoration: "none" }}>
-                  <Card
-                    Svgicon={Professor}
-                    Title={"Για Καθηγητές"}
-                    text={PROFESSOR_TEXT}
-                  />
-                </Link>
-              </div>
+              {cards}
             </div>
             <div id="not_skewed"> </div>
           </Route>
@@ -143,6 +197,8 @@ function App() {
               setRole={setRole}
               change={change}
               noMistakes={noMistakes}
+              loading={loading}
+              alert={alert}
             />
           </Route>
           <Route path="/students">

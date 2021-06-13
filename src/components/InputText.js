@@ -3,6 +3,8 @@ import { HighlightWithinTextarea } from "react-highlight-within-textarea";
 import Tippy from "@tippyjs/react";
 import "tippy.js/dist/tippy.css";
 
+import Loader from "react-loader-spinner";
+
 const InputText = ({
   setInputText,
   getMistakes,
@@ -16,6 +18,7 @@ const InputText = ({
   role,
   setWordCountProf,
   setWordCountStu,
+  loading,
 }) => {
   const [textAreaInput, setTextAreaInput] = useState("");
   const [words_json, setWordsJson] = useState([]);
@@ -38,11 +41,12 @@ const InputText = ({
   let countOrth1;
   let countSti1;
   let countGram1;
+  let content;
 
   //Fetching the api to insert into the db or update a specific word count
   const insert_to_database = (word, type, role) => {
     fetch(
-      `https://checkitapi.herokuapp.com/role/${role}/id/${currUser}/type/${type}/word/${word}`,
+      `http://127.0.0.1:5000/role/${role}/id/${currUser}/type/${type}/word/${word}`,
       {
         method: "POST",
       }
@@ -50,12 +54,9 @@ const InputText = ({
   };
   //kossy wordCount
   const insert_count = (wordCount) => {
-    fetch(
-      `https://checkitapi.herokuapp.com/mistakes/${wordCount}/${currUser}/${role}`,
-      {
-        method: "POST",
-      }
-    ).then((results) => console.log(results));
+    fetch(`http://127.0.0.1:5000/mistakes/${wordCount}/${currUser}/${role}`, {
+      method: "POST",
+    }).then((results) => console.log(results));
   };
 
   const inputTextHandler = (e) => {
@@ -238,7 +239,7 @@ const InputText = ({
   };
   //Get weights for a specific user
   const getWeights = () => {
-    fetch(`https://checkitapi.herokuapp.com/weights/by/${role}/${currUser}`)
+    fetch(`http://127.0.0.1:5000/weights/by/${role}/${currUser}`)
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -254,7 +255,7 @@ const InputText = ({
       w2 = 0,
       w3 = 0,
       count = 0;
-    fetch(`https://checkitapi.herokuapp.com/test/route`)
+    fetch(`http://127.0.0.1:5000/test/route`)
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -281,7 +282,7 @@ const InputText = ({
 
   const assignUserWeight = (w1, w2, w3) => {
     fetch(
-      `https://checkitapi.herokuapp.com/add/user/weights/${role}/${currUser}/${w1}/${w2}/${w3}`,
+      `http://127.0.0.1:5000/add/user/weights/${role}/${currUser}/${w1}/${w2}/${w3}`,
       {
         method: "POST",
       }
@@ -416,18 +417,31 @@ const InputText = ({
           <div className="footer">
             <div className="word-count">
               <div className="words">
-                <span className="number-color">{wordCount}</span>:λέξεις
+                λέξεις:<span className="number-color"> {wordCount}</span>
               </div>
               <div className="chars">
-                <span className="number-color">{characters}</span>:χαρακτήρες
+                χαρακτήρες:<span className="number-color"> {characters} </span>
               </div>
             </div>
-            <input
-              type="submit"
-              onClick={getMistakes}
-              value="Έλεγχος"
-              id="check-text-btn"
-            />
+            {content}
+            {loading ? (
+              <div id="loader">
+                <Loader
+                  type="ThreeDots"
+                  color=" #8bd8bd"
+                  height={100}
+                  width={30}
+                  timeout={10000} //10 secs
+                />
+              </div>
+            ) : (
+              <input
+                type="submit"
+                onClick={getMistakes}
+                value="Έλεγχος"
+                id="check-text-btn"
+              />
+            )}
           </div>
         </form>
       </div>

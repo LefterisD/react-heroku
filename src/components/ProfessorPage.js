@@ -6,6 +6,8 @@ import EssayCounter from "./EssayCounter";
 import DataTable from "./DataTable";
 import ChartOne from "./ChartOne";
 import ProfGrade from "./ProfGrade";
+import AlertMessage from "./AlertMessage";
+import DropDownBtn from "./DropDownBtn";
 
 const customStyles = {
   overlay: {
@@ -26,6 +28,8 @@ const ProfessorPage = ({
   setRole,
   change,
   noMistakes,
+  loading,
+  alert,
 }) => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [wordsToHighlight, setWordsToHighlight] = useState([]);
@@ -57,7 +61,7 @@ const ProfessorPage = ({
 
   const deleteMistakes = () => {
     fetch(
-      `https://checkitapi.herokuapp.com/mistakes/delete_by_id/id=/${user}/role=/${ROLE}`,
+      `http://127.0.0.1:5000/mistakes/delete_by_id/id=/${user}/role=/${ROLE}`,
       {
         method: "POST",
       }
@@ -65,20 +69,9 @@ const ProfessorPage = ({
   };
   //Sends a POST request to our users api to insert new user into the DB
   const addUser = (id) => {
-    fetch(`https://checkitapi.herokuapp.com/user/${ROLE}/${id}`, {
+    fetch(`http://127.0.0.1:5000/user/${ROLE}/${id}`, {
       method: "POST",
     }).then((results) => console.log(results));
-  };
-
-  const clear_data = () => {
-    let curr_user = localStorage.getItem("uniqid");
-    fetch(
-      `https://checkitapi.herokuapp.com/mistakes/delete_by_id/id/${curr_user}/role/${ROLE}`,
-      {
-        method: "POST",
-      }
-    ).then((results) => console.log(results));
-    window.location.reload();
   };
 
   //Checks if local storage uniqid EXISTS and sets the global userid state to the stored id
@@ -90,19 +83,33 @@ const ProfessorPage = ({
     setStoredID(stored_id);
     if (stored_id) {
       setUser(stored_id);
+      if (localStorage.getItem("Role")) {
+        console.log("YPARXEI");
+      } else {
+        localStorage.setItem("Role", "professor");
+      }
+
       addUser(stored_id);
     }
   }, []);
 
   useEffect(() => {
     let stored_userName = localStorage.getItem("userName");
+    if (
+      stored_userName.slice(-1) === "ς" ||
+      stored_userName.slice(-1) === "σ"
+    ) {
+      stored_userName = stored_userName.slice(0, -1);
+    }
     setUserName(stored_userName);
   }, []);
   return (
     <div className="return">
+      <DropDownBtn role={ROLE} />
       <div className="title-wrapper">
         <h1 className="title-prof">Καλώς όρισατε κ.{userName}</h1>
       </div>
+      {alert ? <AlertMessage /> : <div></div>}
       <InputText
         setInputText={setInputText}
         getMistakes={getMistakes}
@@ -116,6 +123,7 @@ const ProfessorPage = ({
         role={ROLE}
         setWordCountProf={setWordCountProf}
         setWordCountStu={setWordCountStu}
+        loading={loading}
       />
       <ProfGrade
         mistakes={mistakes}
@@ -137,71 +145,7 @@ const ProfessorPage = ({
         setEssayNum={setEssayNum}
         wordsOrth={wordsOrth}
       />
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeAddNewEssayModal}
-        className="modal-essay"
-        style={customStyles}
-        contentLabel="Test Modal"
-        closeTimeoutMS={300}
-      >
-        <header>
-          <button onClick={closeAddNewEssayModal}>
-            <i class="fas fa-times"></i>
-          </button>
-        </header>
-        <div className="container">
-          <div className="title">
-            <h1>Add new Essay</h1>
-          </div>
-          <div className="main-section">
-            <div className="input-box">
-              <input
-                type="text"
-                id="context"
-                name="context"
-                className="input-field"
-                placeholder=" "
-              />
-              <label htmlFor="context">Title</label>
-            </div>
-            <div className="input-box">
-              <textarea
-                name="full-topic"
-                id="full-topic"
-                className="input-field"
-                placeholder=" "
-              ></textarea>
-              <label htmlFor="full-topic">Full Topic</label>
-            </div>
-            <div className="line">
-              <div className="left">
-                <input
-                  type="text"
-                  id="date"
-                  name="date"
-                  className="input-field"
-                  placeholder=" "
-                />
-                <label htmlFor="date">Date</label>
-              </div>
-              <div className="right">
-                <input
-                  type="text"
-                  id="author"
-                  name="author"
-                  className="input-field"
-                  placeholder=" "
-                />
-                <label htmlFor="author">Author</label>
-              </div>
-            </div>
-            <div className="btn-wrapper">
-              <button className="add">Add</button>
-            </div>
-          </div>
-        </div>
-      </Modal>
+
       <div className="chart_section">
         <div className="charts">
           <div className="chart-section-title">
@@ -209,10 +153,6 @@ const ProfessorPage = ({
               Συνολικά στατιστικά <span id="chart-span">{essayNum} </span>
               κειμένων
             </h2>
-            <div className="delete-content">
-              <p>Διαγραφή δεδομένων</p>
-              <button onClick={clear_data}>Διαγραφή</button>
-            </div>
           </div>
           <Charts
             countOrth={countOrth}
@@ -228,7 +168,7 @@ const ProfessorPage = ({
         <div className="charts">
           <div className="chart-section-title">
             <h2 className="title-chart" id="sec-title">
-              Στατιστικά τελευταίου κειμένου
+              Στατιστικά τρέχοντος κειμένου
             </h2>
           </div>
           <ChartOne

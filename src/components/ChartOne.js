@@ -12,7 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const COLORS = ["#243665", "#8BD8BD", "#FFBB28"];
+const COLORS = ["#5daae9d7", "#ffbb28be", "#D85531"];
 
 const Charts = ({
   countGram,
@@ -128,7 +128,6 @@ const Charts = ({
   };
   console.log("CHANGE----", change);
   useEffect(() => {
-    
     findPieData(mistakes);
     findWordsBarChar(mistakes);
   }, [wordsOrth, wordsGram]);
@@ -154,7 +153,7 @@ const Charts = ({
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="count" fill="#243665" />
+          <Bar dataKey="count" fill="#5daae9d7" />
         </BarChart>
       </ResponsiveContainer>
       <h3 className="chart-title">Συνολικά λάθη κάθε κατηγορίας</h3>
@@ -201,7 +200,7 @@ const Charts = ({
           <XAxis dataKey="name" />
           <YAxis />
           <Tooltip />
-          <Bar dataKey="count" fill="#8BD8BD" />
+          <Bar dataKey="count" fill="#ffbb28be" />
         </BarChart>
       </ResponsiveContainer>
     </div>
