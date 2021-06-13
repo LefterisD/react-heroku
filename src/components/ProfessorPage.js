@@ -61,7 +61,7 @@ const ProfessorPage = ({
 
   const deleteMistakes = () => {
     fetch(
-      `http://127.0.0.1:5000/mistakes/delete_by_id/id=/${user}/role=/${ROLE}`,
+      `https://checkitapi.herokuapp.com/mistakes/delete_by_id/id=/${user}/role=/${ROLE}`,
       {
         method: "POST",
       }
@@ -69,7 +69,7 @@ const ProfessorPage = ({
   };
   //Sends a POST request to our users api to insert new user into the DB
   const addUser = (id) => {
-    fetch(`http://127.0.0.1:5000/user/${ROLE}/${id}`, {
+    fetch(`https://checkitapi.herokuapp.com/user/${ROLE}/${id}`, {
       method: "POST",
     }).then((results) => console.log(results));
   };

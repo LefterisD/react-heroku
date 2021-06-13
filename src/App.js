@@ -47,7 +47,7 @@ function App() {
     let stu_class = localStorage.getItem("StudentClass");
     if (stu_name && stu_class) {
       setLoading(true);
-      fetch(` http://127.0.0.1:5000/api/v1/check/${inputText}`)
+      fetch(` https://checkitapi.herokuapp.com/api/v1/check/${inputText}`)
         .then((res) => res.json())
         .then((data) => {
           var json_obj = JSON.parse(JSON.stringify(data));
@@ -73,7 +73,7 @@ function App() {
   const update_essay_count = () => {
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `http://127.0.0.1:5000/update_essay_count/user/${curr_user}/role/${role}`,
+      `https://checkitapi.herokuapp.com/update_essay_count/user/${curr_user}/role/${role}`,
       {
         method: "POST",
       }

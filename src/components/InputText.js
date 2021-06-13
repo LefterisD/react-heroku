@@ -46,7 +46,7 @@ const InputText = ({
   //Fetching the api to insert into the db or update a specific word count
   const insert_to_database = (word, type, role) => {
     fetch(
-      `http://127.0.0.1:5000/role/${role}/id/${currUser}/type/${type}/word/${word}`,
+      `https://checkitapi.herokuapp.com/role/${role}/id/${currUser}/type/${type}/word/${word}`,
       {
         method: "POST",
       }
@@ -54,9 +54,12 @@ const InputText = ({
   };
   //kossy wordCount
   const insert_count = (wordCount) => {
-    fetch(`http://127.0.0.1:5000/mistakes/${wordCount}/${currUser}/${role}`, {
-      method: "POST",
-    }).then((results) => console.log(results));
+    fetch(
+      `https://checkitapi.herokuapp.com/mistakes/${wordCount}/${currUser}/${role}`,
+      {
+        method: "POST",
+      }
+    ).then((results) => console.log(results));
   };
 
   const inputTextHandler = (e) => {
@@ -239,7 +242,7 @@ const InputText = ({
   };
   //Get weights for a specific user
   const getWeights = () => {
-    fetch(`http://127.0.0.1:5000/weights/by/${role}/${currUser}`)
+    fetch(`https://checkitapi.herokuapp.com/weights/by/${role}/${currUser}`)
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -255,7 +258,7 @@ const InputText = ({
       w2 = 0,
       w3 = 0,
       count = 0;
-    fetch(`http://127.0.0.1:5000/test/route`)
+    fetch(`https://checkitapi.herokuapp.com/test/route`)
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -282,7 +285,7 @@ const InputText = ({
 
   const assignUserWeight = (w1, w2, w3) => {
     fetch(
-      `http://127.0.0.1:5000/add/user/weights/${role}/${currUser}/${w1}/${w2}/${w3}`,
+      `https://checkitapi.herokuapp.com/add/user/weights/${role}/${currUser}/${w1}/${w2}/${w3}`,
       {
         method: "POST",
       }

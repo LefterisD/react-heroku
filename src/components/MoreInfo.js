@@ -26,7 +26,7 @@ const MoreInfo = ({ info, role }) => {
     e.preventDefault();
     //Must fix this
     const data = new FormData(document.getElementById("info-form"));
-    fetch("http://127.0.0.1:5000/user/user_info", {
+    fetch("https://checkitapi.herokuapp.com/user/user_info", {
       method: "POST",
       body: data,
     }).then((results) => console.log(results));

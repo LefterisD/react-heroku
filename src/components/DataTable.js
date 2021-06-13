@@ -124,7 +124,7 @@ export default function DataTable({
     let user_id = localStorage.getItem("uniqid");
 
     const response = await fetch(
-      `http://127.0.0.1:5000/essays/all/role/${role}/id/${user_id}`
+      `https://checkitapi.herokuapp.com/essays/all/role/${role}/id/${user_id}`
     );
 
     const essay_data = await response.json();
@@ -149,7 +149,9 @@ export default function DataTable({
   const getEssayData = () => {
     let temp_data = [];
     let user_id = localStorage.getItem("uniqid");
-    fetch(`http://127.0.0.1:5000/essays/all/role/${role}/id/${user_id}`)
+    fetch(
+      `https://checkitapi.herokuapp.com/essays/all/role/${role}/id/${user_id}`
+    )
       .then((res) => res.json())
       .then((essays) => {
         let essay_data = JSON.parse(JSON.stringify(essays));

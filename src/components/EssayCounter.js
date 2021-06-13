@@ -34,7 +34,7 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
   const get_essay_count = () => {
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `http://127.0.0.1:5000/update_essay_count/user/${curr_user}/role/${role}`
+      `https://checkitapi.herokuapp.com/update_essay_count/user/${curr_user}/role/${role}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -52,7 +52,7 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
 
   const getWordCount = () => {
     let curr_user = localStorage.getItem("uniqid");
-    fetch(`http://127.0.0.1:5000/getTotalWords/${curr_user}/${role}`)
+    fetch(`https://checkitapi.herokuapp.com/getTotalWords/${curr_user}/${role}`)
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -70,7 +70,9 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
 
   const getGradeTA = () => {
     let user_id = localStorage.getItem("uniqid");
-    fetch(`http://127.0.0.1:5000/essays/all/role/${role}/id/${user_id}`)
+    fetch(
+      `https://checkitapi.herokuapp.com/essays/all/role/${role}/id/${user_id}`
+    )
       .then((res) => res.json())
       .then((essays) => {
         let essay_data = JSON.parse(JSON.stringify(essays));
@@ -94,7 +96,7 @@ const EssayCounter = ({ mistakes, role, setEssayNum, wordsOrth }) => {
   const clear_data = () => {
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `http://127.0.0.1:5000/mistakes/delete_by_id/id/${curr_user}/role/${role}`,
+      `https://checkitapi.herokuapp.com/mistakes/delete_by_id/id/${curr_user}/role/${role}`,
       {
         method: "POST",
       }

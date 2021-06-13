@@ -42,7 +42,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
   const getMistakesStudent = (e) => {
     e.preventDefault();
     setLoadingStu(true);
-    fetch(` http://127.0.0.1:5000/api/v1/check/${inputTextStudent}`)
+    fetch(` https://checkitapi.herokuapp.com/api/v1/check/${inputTextStudent}`)
       .then((res) => res.json())
       .then((data) => {
         var json_obj = JSON.parse(JSON.stringify(data));
@@ -63,7 +63,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
   const update_essay_count = () => {
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `http://127.0.0.1:5000/update_essay_count/user/${curr_user}/role/${ROLE}`,
+      `https://checkitapi.herokuapp.com/update_essay_count/user/${curr_user}/role/${ROLE}`,
       {
         method: "POST",
       }
@@ -72,7 +72,7 @@ const StudentPage = ({ user, change, noMistakes }) => {
 
   //Sends a POST request to our users api to insert new user into the DB
   const addUser = (id) => {
-    fetch(`http://127.0.0.1:5000/user/${ROLE}/${id}`, {
+    fetch(`https://checkitapi.herokuapp.com/user/${ROLE}/${id}`, {
       method: "POST",
     }).then((results) => console.log(results));
   };

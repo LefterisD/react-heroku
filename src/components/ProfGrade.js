@@ -155,7 +155,7 @@ const ProfGrade = ({
   };
 
   const getWeights = (orthPercentage, gramPercentage, stiPercentage) => {
-    fetch(`http://127.0.0.1:5000/weights/by/${role}/${user}`)
+    fetch(`https://checkitapi.herokuapp.com/weights/by/${role}/${user}`)
       .then((res) => res.json())
       .then((data) => {
         let weights = JSON.parse(JSON.stringify(data));
@@ -178,7 +178,7 @@ const ProfGrade = ({
     let stu_name = localStorage.getItem("StudentName");
     let stu_class = localStorage.getItem("StudentClass");
     fetch(
-      `http://127.0.0.1:5000/essays/add/role/${role}/id/${user}/student/${stu_name}/class/${stu_class}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
+      `https://checkitapi.herokuapp.com/essays/add/role/${role}/id/${user}/student/${stu_name}/class/${stu_class}/spelling/${countOrth}/grammar/${countGram}/puncutation/${countSti}/words/${wordCount}/${grade}`,
       {
         method: "POST",
       }
@@ -204,7 +204,7 @@ const ProfGrade = ({
     }
 
     fetch(
-      `http://127.0.0.1:5000/weights/update/${role}/${user}/${type}/${grade}/${userGrade}`,
+      `https://checkitapi.herokuapp.com/weights/update/${role}/${user}/${type}/${grade}/${userGrade}`,
       {
         method: "POST",
       }

@@ -32,7 +32,9 @@ const Charts = ({
     let temp_dataPie = [];
     //dataPie=[];
     let user_id = localStorage.getItem("uniqid");
-    fetch(`http://127.0.0.1:5000/mistakes/get_all/role/${role}/id/${user_id}`)
+    fetch(
+      `https://checkitapi.herokuapp.com/mistakes/get_all/role/${role}/id/${user_id}`
+    )
       .then((res) => res.json())
       .then((data) => {
         let json_obj = JSON.parse(JSON.stringify(data));
@@ -84,7 +86,7 @@ const Charts = ({
     let type = "grammar";
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `http://127.0.0.1:5000/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
+      `https://checkitapi.herokuapp.com/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -113,7 +115,7 @@ const Charts = ({
     let type = "spelling";
     let curr_user = localStorage.getItem("uniqid");
     fetch(
-      `http://127.0.0.1:5000/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
+      `https://checkitapi.herokuapp.com/mistakes_by_user/${curr_user}/role/${role}/type/${type}`
     )
       .then((res) => res.json())
       .then((data) => {
